@@ -19,7 +19,7 @@ export const reducer = (state, action) => {
         return { ...state, showRealScale: action.payload }
     }
     if (action.type === "RESET") {
-        return { ...state, reset: action.payload, selectedPlanet: {},showOrbit: false, showRealScale: false }
+        return { ...state, reset: action.payload }
     }
     return state
 }
