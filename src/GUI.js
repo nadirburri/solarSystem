@@ -7,9 +7,9 @@ export default function GUI() {
     const [sliderValue, setSliderValue] = useState(14400);
     const [shownValue, setShownValue] = useState(1)
 
-    useEffect(() => {
-        setSliderValue(14400)
-    }, [context.planetState.reset])
+    // useEffect(() => {
+    //     setSliderValue(14400)
+    // }, [context.planetState.reset])
 
     context.planetState.TIMESTEP = sliderValue
 
