@@ -21,9 +21,9 @@ export default function GUI() {
         if (sliderValue == 1) {
             setShownValue("1 second => 1 second")
         } else if (sliderValue < 3600 * 12) {
-            setShownValue(`1 second => ${Math.round((sliderValue / 3600 / 24 * 60) * 100) / 100} days`)
+            setShownValue(`1 second => ${Math.round((sliderValue / 3600 / 24 * 60) * 100) / 100 * 2} days`)
         } else if (sliderValue > 3600 * 12) {
-            setShownValue(`1 second => ${Math.round((sliderValue / 3600 / 24 / 30 * 60) * 100) / 100} months`)
+            setShownValue(`1 second => ${Math.round((sliderValue / 3600 / 24 / 30 * 60) * 100) / 100 * 2} months`)
         }
     }, [sliderValue])
 
@@ -36,7 +36,7 @@ export default function GUI() {
     return (
         <div className={context.planetState.GUI ? "GUIcardActive" : "GUIcardHidden"} onMouseMove={() => context.dispatch({ type: "TURN_GUI", payload: true })}>
             <p>{shownValue}</p>
-            <input className="slider" type="range" min="1" max="259201" step="5400" value={sliderValue} onChange={(e) => handleChange(e)} />
+            <input className="slider" type="range" min="1" max="129601" step="5400" value={sliderValue} onChange={(e) => handleChange(e)} />
             <div className="buttonCnt">
                 <h3>Orbit:</h3>
                 <div className={context.planetState.showOrbit ? "GUIButtonOn" : "GUIButtonOff"} onClick={() => { context.dispatch({ type: "TURN_ORBIT", payload: !(context.planetState.showOrbit) }) }} />

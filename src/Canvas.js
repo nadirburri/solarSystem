@@ -195,7 +195,7 @@ export default function Canvas() {
     // CALCULATE NEW POSITION & FORCES ACTING ON EACH BODY
     useEffect(() => {
         bodies = [context.planetState.sun, context.planetState.mercury, context.planetState.venus, context.planetState.earth, context.planetState.mars, context.planetState.jupiter, context.planetState.saturn, context.planetState.uranus, context.planetState.neptune]
-        let frame1, lastFrameTime
+        let frame1, frame2, lastFrameTime
         const render1 = (time) => {
             if (time - lastFrameTime < 1000 / 60) {
                 frame1 = requestAnimationFrame(() => render1())
@@ -209,8 +209,22 @@ export default function Canvas() {
             frame1 = requestAnimationFrame(() => render1())
         }
         frame1 = requestAnimationFrame(() => render1())
+        const render2 = (time) => {
+            if (time - lastFrameTime < 1000 / 60) {
+                frame1 = requestAnimationFrame(() => render2())
+                return
+            }
+            lastFrameTime = time
+            bodies.forEach((body) => {
+                body.calculatePosition(bodies, context.planetState.TIMESTEP)
+            })
+
+            frame2 = requestAnimationFrame(() => render2())
+        }
+        frame2 = requestAnimationFrame(() => render2())
         return () => {
             cancelAnimationFrame(frame1)
+            cancelAnimationFrame(frame2)
         }
     }, [context.planetState.reset, context.planetState.TIMESTEP])
 
