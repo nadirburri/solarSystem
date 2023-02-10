@@ -4,7 +4,6 @@ let AU = 149.6e6 * 1000
 let G = 6.67428e-11
 let SCALE = 200 / AU
 
-
 export default utilities = {
     AU: AU,
     G: G,
@@ -61,7 +60,7 @@ export default utilities = {
             c.closePath()
         }
 
-        // DRAW CIRCLES REPRESENTING PLANET
+        // DRAW CIRCLES WHERE EACH PLANET IS AT TO ADD EFFECTS TO THEM LATER
         c.save()
         c.beginPath()
         c.arc(x, y, radius, 0, Math.PI * 2, false)
@@ -80,7 +79,7 @@ export default utilities = {
         c.closePath()
         c.clip()
 
-        // SINCE THE SUN LOOKS FINE WITH JUST A GRADIENT, DRAW IMAGES ONLY FOR PLANETS
+        // SINCE THE SUN LOOKS FINE WITH GRADIENT, DRAW IMAGES ONLY FOR PLANETS
         if (!this.sun) {
             const image = new Image()
             image.src = planetIcon
@@ -88,7 +87,7 @@ export default utilities = {
         }
         c.restore()
 
-        // ADD GLOW & SHADOW
+        // ADD GLOW TO THE SUN AND SHADING ON EACH PLANET CAUSED BY THE SUN
         let gradient
         if (this.sun === true) {
             c.shadowBlur = 50
@@ -96,7 +95,6 @@ export default utilities = {
             gradient = c.createLinearGradient((x - radius / 2), (y - radius / 2), (x + radius / 2), (y + radius / 2))
             gradient.addColorStop(0, "rgb(255, 252, 0)")
             gradient.addColorStop(1, "rgb(255, 81, 19)")
-
         } else {
             c.shadowBlur = 0
             c.shadowColor = ""
@@ -127,17 +125,20 @@ export default utilities = {
             this.sunDistanceX = distance_x
             this.sunDistanceY = distance_y
         }
+        // NEWTON'S FORMULA FOR GRAVITATIONAL ACCELERATION
         let force = G * this.mass * body.mass / distance ** 2
         let theta = Math.atan2(distance_y, distance_x)
         let fx = Math.cos(theta) * force
         let fy = Math.sin(theta) * force
-        if (distance < 40000000000) {
-            distance = 40000000000
-        }
+        // if (distance < 40000000000) {
+        //     distance = 40000000000
+        // }
         return { fx, fy }
     },
 
     calculatePosition: function (bodies, TIMESTEP) {
+        // EULER METHOD
+
         // let total_fx = 0
         // let total_fy = 0
         // bodies.forEach((body) => {
@@ -156,12 +157,14 @@ export default utilities = {
         // this.x += this.vx * TIMESTEP
         // this.y += this.vy * TIMESTEP
 
+        // RUNGE-KUTTA 4TH ORDER METHOD
+
         let k1x, k1y, k2x, k2y, k3x, k3y, k4x, k4y
         let l1x, l1y, l2x, l2y, l3x, l3y, l4x, l4y
         let total_fx = 0
         let total_fy = 0
 
-        // First iteration
+        // FIRST ITERATION
         bodies.forEach((body) => {
             if (this === body) {
                 return
@@ -177,7 +180,7 @@ export default utilities = {
         l1x = this.vx * TIMESTEP
         l1y = this.vy * TIMESTEP
 
-        // Second iteration
+        // SECOND ITERATION
         total_fx = 0
         total_fy = 0
         bodies.forEach((body) => {
@@ -195,7 +198,7 @@ export default utilities = {
         l2x = (this.vx + k1x / 2) * TIMESTEP
         l2y = (this.vy + k1y / 2) * TIMESTEP
 
-        // Third iteration
+        // THIRD ITERATION
         total_fx = 0
         total_fy = 0
         bodies.forEach((body) => {
@@ -213,7 +216,7 @@ export default utilities = {
         l3x = (this.vx + k2x / 2) * TIMESTEP
         l3y = (this.vy + k2y / 2) * TIMESTEP
 
-        // Fourth iteration
+        // FOURTH ITERATION
         total_fx = 0
         total_fy = 0
         bodies.forEach((body) => {
@@ -231,12 +234,13 @@ export default utilities = {
         l4x = (this.vx + k3x) * TIMESTEP
         l4y = (this.vy + k3y) * TIMESTEP
 
-        // Update position and velocity
+        // UPDATE POSITION AND VELOCITY WITH THE AVERAGE OF THE CALCULATED VALUES
         this.x = this.x + (l1x + 2 * l2x + 2 * l3x + l4x) / 6
         this.y = this.y + (l1y + 2 * l2y + 2 * l3y + l4y) / 6
         this.vx = this.vx + (k1x + 2 * k2x + 2 * k3x + k4x) / 6
         this.vy = this.vy + (k1y + 2 * k2y + 2 * k3y + k4y) / 6
 
+        // ADD POINTS EACH FRAME THAT WILL BE CONNECTED TO FORM THE ORBIT PATH FOR EACH PLANET (IF TURNED ON)
         if (this.name !== "Sun") {
             let points = { x: this.x, y: this.y }
             this.orbit.push(points)
@@ -272,29 +276,5 @@ export default utilities = {
         selectedPlanet.y = transformedMouseY
 
         selectedPlanet.dragging = true
-    },
-    getTransformedPoint: function (x, y, c) {
-        const transform = c.getTransform();
-        const invertedScaleX = 1 / transform.a;
-        const invertedScaleY = 1 / transform.d;
-
-        const transformedX = x * invertedScaleX;
-        const transformedY = y * invertedScaleY;
-
-        return { x: transformedX, y: transformedY };
-    },
-    getPlanet: function () {
-        return ({
-            x: this.x,
-            y: this.y,
-            radius: this.radius,
-            color: this.color,
-            mass: this.mass,
-            orbit: this.orbit,
-            sun: this.sun,
-            distanceToSun: this.distanceToSun,
-            vx: this.vx,
-            vy: this.vy,
-        })
     }
 }

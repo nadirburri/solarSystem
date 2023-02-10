@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { Context } from './PlanetContext'
 
+// FUNCTIONS AND CONSTANTS THAT WILL BE USED
 import utilities from "./utilities"
 
+// PLANET ICONS FOR EACH PLANET
 import mercuryImg from "./images/mercury.png"
 import venusImg from "./images/venus.png"
 import earthImg from "./images/earth.png"
@@ -15,10 +17,16 @@ import uranusImg from "./images/uranus.png"
 export default function Canvas() {
     const context = useContext(Context)
 
-    const { AU, SCALE } = utilities
+    const { AU } = utilities
 
     let sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune
     let bodies = []
+
+    // 4 useEffect() FUNCTIONS:
+    // 1) INITILAZOR FOR VALUES
+    // 2) CALCULATOR FOR NEW POSITIONS AND VELICITIES FOR EACH PLANET
+    // 3) RENDERER FOR NEW CANVAS MATRIX
+    // 4) RENDERER FOR EACH PLANET
 
     // useEffect INITIALIZOR
     const canvasRef = useRef(null)
@@ -195,6 +203,7 @@ export default function Canvas() {
     // CALCULATE NEW POSITION & FORCES ACTING ON EACH BODY
     useEffect(() => {
         bodies = [context.planetState.sun, context.planetState.mercury, context.planetState.venus, context.planetState.earth, context.planetState.mars, context.planetState.jupiter, context.planetState.saturn, context.planetState.uranus, context.planetState.neptune]
+        // TWO LOOPS RUNNING AT ONCE AT 60 TIMES PER SECOND SINCE ANIMATIONFRAME DOESN'T RUN ABOVE 60FPS ON MOST MONITORS
         let frame1, frame2, lastFrameTime
         const render1 = (time) => {
             if (time - lastFrameTime < 1000 / 60) {
@@ -228,6 +237,7 @@ export default function Canvas() {
         }
     }, [context.planetState.reset, context.planetState.TIMESTEP])
 
+    // UPDATE THE CANVAS MATRIX EACH FRAME DEPENDANT ON ZOOM & OFFSET VALUES
     useEffect(() => {
         const c = contextRef.current
         const canvas = c.canvas
@@ -264,7 +274,7 @@ export default function Canvas() {
         }
     }, [context.planetState.reset])
 
-    // DISPLAY EVERYTHING ON CANVAS
+    // DRAW EACH PLANET ON CANVAS AT THEIR CALCULATED POSITIONS EACH FRAME
     useEffect(() => {
         const c = contextRef.current
 
@@ -278,7 +288,6 @@ export default function Canvas() {
             cancelAnimationFrame(frame)
             lastFrameTime = time
 
-            // RENDER EACH BODY AT THEIR NEW CALCULATED POSITIONS
             context.planetState.sun.draw(c, context.planetState.showOrbit, context.planetState.showRealScale)
             context.planetState.mercury.draw(c, context.planetState.showOrbit, context.planetState.showRealScale, mercuryImg)
             context.planetState.venus.draw(c, context.planetState.showOrbit, context.planetState.showRealScale, venusImg)
@@ -289,6 +298,7 @@ export default function Canvas() {
             context.planetState.uranus.draw(c, context.planetState.showOrbit, context.planetState.showRealScale, uranusImg)
             context.planetState.neptune.draw(c, context.planetState.showOrbit, context.planetState.showRealScale, neptuneImg)
 
+            // UNCOMMENT TO SHOW PERFORMANCE ON CONSOLE (LOWER VALUES = GOOD)
             // let innerLoopTime = performance.now() - startTime;
             // console.log(innerLoopTime)
 
@@ -298,6 +308,7 @@ export default function Canvas() {
         return () => {
             cancelAnimationFrame(frame)
         }
+        // RESTART THE LOOP IF ANY OF THESE CHANGE
     }, [context.planetState.reset, context.planetState.showOrbit, context.planetState.showRealScale])
 
     return (
