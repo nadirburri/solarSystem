@@ -113,7 +113,7 @@ export default utilities = {
         c.closePath()
         c.restore()
     },
-
+    
     findAttractionForce: function (body, x, y) {
         let other_x = body.x
         let other_y = body.y

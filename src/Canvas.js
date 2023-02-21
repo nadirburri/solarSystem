@@ -24,7 +24,7 @@ export default function Canvas() {
 
     // 4 useEffect() FUNCTIONS:
     // 1) INITILAZOR FOR VALUES
-    // 2) CALCULATOR FOR NEW POSITIONS AND VELICITIES FOR EACH PLANET
+    // 2) CALCULATOR FOR NEW POSITIONS AND VELOCITIES FOR EACH PLANET
     // 3) RENDERER FOR NEW CANVAS MATRIX
     // 4) RENDERER FOR EACH PLANET
 
@@ -237,7 +237,7 @@ export default function Canvas() {
         }
     }, [context.planetState.reset, context.planetState.TIMESTEP])
 
-    // UPDATE THE CANVAS MATRIX EACH FRAME DEPENDANT ON ZOOM & OFFSET VALUES
+    // UPDATE THE CANVAS MATRIX EACH FRAME DEPENDANT ON ZOOM & CAMERA OFFSET VALUES
     useEffect(() => {
         const c = contextRef.current
         const canvas = c.canvas
@@ -274,7 +274,7 @@ export default function Canvas() {
         }
     }, [context.planetState.reset])
 
-    // DRAW EACH PLANET ON CANVAS AT THEIR CALCULATED POSITIONS EACH FRAME
+    // DRAW EACH PLANET ON CANVAS AT THEIR NEW CALCULATED POSITIONS EACH FRAME
     useEffect(() => {
         const c = contextRef.current
 
