@@ -1,3 +1,6 @@
-A runge-kutta 4th order solar system simulation that uses react.js for functionality and appearance.
+use commands 'npm install' then 'npm start' in the terminal to run the app
 
-No libraries used, just HTML 5 Canvas and JSX.
+a runge-kutta 4th order solar system simulation that uses react.js for functionality and appearance
+made with HTML 5 Canvas and JSX, no other external libraries
+
+discord is nadirburri
